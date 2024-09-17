@@ -1,16 +1,18 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
+import java.util.concurrent.*;
+
 import org.apache.commons.math3.linear.*;
 
 public class PlanesHandler {
-    HashMap<String, Plane> planes;
-
+    private HashMap<String, Plane> planes;
+    private ConcurrentHashMap<String, Double> errors;
     public PlanesHandler() {
         this.planes = new HashMap<>();
+        this.errors = new ConcurrentHashMap<>();
     }
 
-    public void generatePlanes(HashMap<String, ArrayList<RoofPoint>> roofPointsMap) {
+
+    public void generatePlanes(HashMap<String, ArrayList<MyPoint>> roofPointsMap) {
         var startTime = System.nanoTime();
             roofPointsMap.forEach((key, value) -> {
                 double[] xArray = new double[value.size()];
@@ -44,5 +46,51 @@ public class PlanesHandler {
         });
             var endTime = System.nanoTime();
             System.out.println("Planes: " + (endTime - startTime) / 1000000 + "s");
+    }
+    public void getAverageErrors(ArrayList<MyPoint> lasPoints){
+        System.out.println("Beginning average errors");
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        List<Future<Void>> futures = new ArrayList<>();
+//        this.planes.forEach((key, value) -> {
+//                Callable<Void> task = () -> {
+//                    filterCoords(key, value, lasPoints);
+//                    return null;
+//            };
+//            futures.add(executor.submit(task));
+//        });
+//        for (Future<Void> future : futures) {
+//            try {
+//                future.get();
+//
+//            } catch (InterruptedException | ExecutionException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        executor.shutdown();
+        this.planes.forEach((key, plane) -> filterCoords(key, plane, lasPoints));
+    }
+    private void filterCoords(String key, Plane plane, ArrayList<MyPoint> lasPoints){
+        BoundingBox planeBbox = plane.getPlaneBbox();
+        double a = plane.getaCoefficient();
+        double b = plane.getbCoefficient();
+        double c = plane.getcCoefficient();
+        double d = plane.getdCoefficient();
+        List<Double> distances = new ArrayList<>();
+        for(MyPoint point : lasPoints){
+            if(planeBbox.containsPoint(point)){
+                double distance = (a * point.getX() + b * point.getY() + c * point.getZ() + d) / (Math.sqrt(a*a + b*b + c*c));
+                if(distance > -1 && distance < 1){
+                    distances.add(distance);
+                }
+            }
+        }
+        OptionalDouble average = distances.stream().mapToDouble(Double::doubleValue).average();
+        double error = average.isPresent() ? average.getAsDouble() : 0.0;
+        this.errors.put(key, error);
+    }
+
+    public ConcurrentHashMap<String, Double> getErrors() {
+        return errors;
     }
 }

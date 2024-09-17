@@ -1,20 +1,20 @@
-public class RoofPoint {
-    private float x;
-    private float y;
-    private float z;
+public class MyPoint {
+    private double x;
+    private double y;
+    private double z;
 
-    public RoofPoint(float x, float y, float z) {
+    public MyPoint(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
-    public float getX() {
+    public double getX() {
         return x;
     }
-    public float getY() {
+    public double getY() {
         return y;
     }
-    public float getZ() {
+    public double getZ() {
         return z;
     }
 

@@ -23,7 +23,13 @@ public class BoundingBox {
         return !(this.maxX < other.minX) && !(this.minX > other.maxX) && !(this.maxY < other.minY) && !(this.minY > other.maxY);
     }
 
-    public boolean containsPoint(float x, float y){
+    public boolean containsPoint(double x, double y){
+        return !(this.maxX < x) && !(this.minX > x) && !(this.maxY < y) && !(this.minY > y);
+    }
+
+    public boolean containsPoint(MyPoint point){
+        double x = point.getX();
+        double y = point.getY();
         return !(this.maxX < x) && !(this.minX > x) && !(this.maxY < y) && !(this.minY > y);
     }
 

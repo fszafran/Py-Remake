@@ -10,19 +10,21 @@ public class Main {
     public static void main(String[] args) {
         float startTime = System.nanoTime();
 
-        File lasFile = new File("sss\\pr\\las\\78776_1433575_M-34-47-D-c-1-3-3-1.laz");
-        File gmlDirectory = new File("sss\\pr\\gmls\\Modele_3D");
+        File lasFile = new File("C:\\Users\\filo1\\Desktop\\stare\\pr\\las\\78776_1433575_M-34-47-D-c-1-3-3-1.laz");
+        File gmlDirectory = new File("C:\\Users\\filo1\\Desktop\\stare\\pr\\gmls\\Modele_3D");
 
         LASReader lasReader = new LASReader(lasFile);
         LasPointsHandler lasPointsHandler = new LasPointsHandler();
         lasPointsHandler.readLasPoints(lasReader);
-        ArrayList<ArrayList<Double>> lasPoints = lasPointsHandler.getLasPoints();
+        ArrayList<MyPoint> lasPoints = lasPointsHandler.getLasPoints();
         BoundingBox globalBbox = lasPointsHandler.getGlobalBbox();
 
         RoofPointsHolder roofPointsHolder = new RoofPointsHolder();
         roofPointsHolder.generateRoofPointsFromDirectory(gmlDirectory, globalBbox);
         PlanesHandler planesHandler = new PlanesHandler();
         planesHandler.generatePlanes(roofPointsHolder.getRoofPointsMap());
+        planesHandler.getAverageErrors(lasPoints);
+        System.out.println(planesHandler.getErrors().size());
         float endTime = System.nanoTime();
         double elapsedTime = (endTime - startTime) * 1e-9;
         System.out.println("Execution time: " + elapsedTime + " seconds");

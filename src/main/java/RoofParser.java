@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class RoofParser {
 
-    public static void loadRoofPointsFromFileIntoMap(File file, HashMap<String,ArrayList<RoofPoint>> pointsMap, BoundingBox globalBbox) {
+    public static void loadRoofPointsFromFileIntoMap(File file, HashMap<String,ArrayList<MyPoint>> pointsMap, BoundingBox globalBbox) {
         int roofCount = 0;
         Document document = parse(file);
         Element rootNode = document.getRootElement();
@@ -23,7 +23,7 @@ public class RoofParser {
                                 for(Element surface : bounds.getChildren()){
                                     if(surface.getName().equals("RoofSurface")){
                                         String id = surface.getAttributes().getFirst().getValue();
-                                        ArrayList<RoofPoint> pointsArray = extractRoofPointsFromPos(surface, globalBbox);
+                                        ArrayList<MyPoint> pointsArray = extractRoofPointsFromPos(surface, globalBbox);
                                         if(pointsArray.isEmpty()){
                                             continue; // roof has points outside globalBbox, is skipped
                                         }
@@ -57,8 +57,8 @@ public class RoofParser {
         return document;
     }
 
-    public static ArrayList<RoofPoint> extractRoofPointsFromPos(Element roofSurface, BoundingBox globalBbox){
-        ArrayList<RoofPoint> points = new ArrayList<>();
+    public static ArrayList<MyPoint> extractRoofPointsFromPos(Element roofSurface, BoundingBox globalBbox){
+        ArrayList<MyPoint> points = new ArrayList<>();
 
         //no longer multiple children so we can just get the first one
         Element currentChild = roofSurface.getChildren().getFirst();
@@ -67,13 +67,13 @@ public class RoofParser {
         }
         for(Element pos : currentChild.getChildren()){
             String[] coordinates = pos.getValue().split(" ");
-            float x = Float.parseFloat(coordinates[0]);
-            float y = Float.parseFloat(coordinates[1]);
-            float z = Float.parseFloat(coordinates[2]);
+            double x = Float.parseFloat(coordinates[0]);
+            double y = Float.parseFloat(coordinates[1]);
+            double z = Float.parseFloat(coordinates[2]);
             if(!globalBbox.containsPoint(x, y)){
                 return new ArrayList<>();
             }
-            points.add(new RoofPoint(x, y, z));
+            points.add(new MyPoint(x, y, z));
         }
         return points;
     }

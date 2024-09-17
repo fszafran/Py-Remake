@@ -5,11 +5,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.*;
 
 public class RoofPointsHolder {
 
-    private HashMap<String, ArrayList<RoofPoint>> roofPointsMap;
+    private HashMap<String, ArrayList<MyPoint>> roofPointsMap;
 
     public RoofPointsHolder() {
         roofPointsMap = new HashMap<>();
@@ -59,10 +58,10 @@ public class RoofPointsHolder {
                     if(lowerCorner == null || upperCorner == null){
                         continue;
                     }
-                    float xMin = Float.parseFloat(lowerCorner[0]);
-                    float yMin = Float.parseFloat(lowerCorner[1]);
-                    float xMax = Float.parseFloat(upperCorner[0]);
-                    float yMax = Float.parseFloat(upperCorner[1]);
+                    double xMin = Float.parseFloat(lowerCorner[0]);
+                    double yMin = Float.parseFloat(lowerCorner[1]);
+                    double xMax = Float.parseFloat(upperCorner[0]);
+                    double yMax = Float.parseFloat(upperCorner[1]);
 
                     BoundingBox fileBbox = new BoundingBox(xMin, yMin, xMax, yMax);
                     if(globalBbox.containsBbox(fileBbox)){
@@ -77,7 +76,7 @@ public class RoofPointsHolder {
         return filesFittingGlobalBbox;
     }
 
-    public HashMap<String, ArrayList<RoofPoint>> getRoofPointsMap() {
+    public HashMap<String, ArrayList<MyPoint>> getRoofPointsMap() {
         return roofPointsMap;
     }
 }

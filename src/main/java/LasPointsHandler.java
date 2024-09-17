@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class LasPointsHandler {
 
     private BoundingBox globalBbox;
-    private ArrayList<ArrayList<Double>> lasPoints;
+    private ArrayList<MyPoint> lasPoints;
     public LasPointsHandler() {
         this.globalBbox = new BoundingBox();
         this.lasPoints = new ArrayList<>();
@@ -23,7 +23,7 @@ public class LasPointsHandler {
                 double x = (double) p.getX() /100;
                 double y = (double) p.getY() /100;
                 double z = (double) p.getZ() /100;
-                this.lasPoints.add(new ArrayList<>(Arrays.asList(x,y,z)));
+                this.lasPoints.add(new MyPoint(x,y,z));
                 this.globalBbox.setMinX(Math.min(x, globalBbox.getMinX()));
                 this.globalBbox.setMaxX(Math.max(x, globalBbox.getMaxX()));
                 this.globalBbox.setMinY(Math.min(y, globalBbox.getMinY()));
@@ -43,7 +43,7 @@ public class LasPointsHandler {
         return this.globalBbox;
     }
 
-    public ArrayList<ArrayList<Double>> getLasPoints() {
+    public ArrayList<MyPoint> getLasPoints() {
         return this.lasPoints;
     }
 }

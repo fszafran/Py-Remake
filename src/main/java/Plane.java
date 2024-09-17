@@ -9,9 +9,9 @@ public class Plane {
     private double dCoefficient;
 
     public Plane (double[] coefficients, BoundingBox planeBbox){
-        this.aCoefficient = coefficients[0];
-        this.bCoefficient = coefficients[1];
-        this.dCoefficient = coefficients[2];
+        this.aCoefficient = coefficients[1];
+        this.bCoefficient = coefficients[2];
+        this.dCoefficient = coefficients[0];
         this.planeBbox = planeBbox;
     }
 
@@ -24,5 +24,41 @@ public class Plane {
                 ", cCoefficient=" + cCoefficient +
                 ", dCoefficient=" + dCoefficient +
                 '}';
+    }
+
+    public BoundingBox getPlaneBbox() {
+        return planeBbox;
+    }
+
+    public void setPlaneBbox(BoundingBox planeBbox) {
+        this.planeBbox = planeBbox;
+    }
+
+    public double getaCoefficient() {
+        return aCoefficient;
+    }
+
+    public void setaCoefficient(double aCoefficient) {
+        this.aCoefficient = aCoefficient;
+    }
+
+    public double getbCoefficient() {
+        return bCoefficient;
+    }
+
+    public void setbCoefficient(double bCoefficient) {
+        this.bCoefficient = bCoefficient;
+    }
+
+    public double getcCoefficient() {
+        return cCoefficient;
+    }
+
+    public double getdCoefficient() {
+        return dCoefficient;
+    }
+
+    public void setdCoefficient(double dCoefficient) {
+        this.dCoefficient = dCoefficient;
     }
 }
