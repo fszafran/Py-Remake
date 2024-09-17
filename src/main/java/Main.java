@@ -10,8 +10,8 @@ public class Main {
     public static void main(String[] args) {
         float startTime = System.nanoTime();
 
-        File lasFile = new File("\\pr\\las\\78776_1433575_M-34-47-D-c-1-3-3-1.laz");
-        File gmlDirectory = new File("\\pr\\gmls\\Modele_3D");
+        File lasFile = new File("sss\\pr\\las\\78776_1433575_M-34-47-D-c-1-3-3-1.laz");
+        File gmlDirectory = new File("sss\\pr\\gmls\\Modele_3D");
 
         LASReader lasReader = new LASReader(lasFile);
         LasPointsHandler lasPointsHandler = new LasPointsHandler();
