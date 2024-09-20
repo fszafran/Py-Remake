@@ -1,19 +1,13 @@
 import java.util.*;
-import java.util.concurrent.*;
 
 import org.apache.commons.math3.linear.*;
 
 public class PlanesHandler {
-    private HashMap<String, Plane> planes;
-    private ConcurrentHashMap<String, Double> errors;
-    public PlanesHandler() {
-        this.planes = new HashMap<>();
-        this.errors = new ConcurrentHashMap<>();
-    }
 
-
-    public void generatePlanes(HashMap<String, ArrayList<MyPoint>> roofPointsMap) {
+    public HashMap<String, Plane> generatePlanes(HashMap<String, ArrayList<MyPoint>> roofPointsMap, ArrayList<MyPoint> lasPoints) {
         var startTime = System.nanoTime();
+        HashMap<String, Plane> planes = new HashMap<>();
+
             roofPointsMap.forEach((key, value) -> {
                 double[] xArray = new double[value.size()];
                 double[] yArray = new double[value.size()];
@@ -29,48 +23,31 @@ public class PlanesHandler {
                 double maxY = Arrays.stream(yArray).max().getAsDouble();
                 BoundingBox planeBbox = new BoundingBox(minX, minY, maxX, maxY);
 
-                double[] onesRow = new double[value.size()];
-                Arrays.fill(onesRow, 1.0);
-                RealMatrix A = MatrixUtils.createRealMatrix(new double[][]{
-                        onesRow,
-                        xArray,
-                        yArray
-                }).transpose();
-                RealMatrix AT = A.transpose();
-                RealMatrix B = MatrixUtils.createColumnRealMatrix(zArray);
-                RealMatrix ATA = AT.multiply(A);
-                RealMatrix ATAInv = new LUDecomposition(ATA).getSolver().getInverse();
-                RealMatrix coefficients = ATAInv.multiply(AT).multiply(B);
+                RealMatrix coefficients = getPlaneCoefficients(xArray, yArray, zArray);
                 Plane plane = new Plane(coefficients.getColumn(0), planeBbox); // always 1 column 3 rows
-                this.planes.put(key, plane);
+                plane.setError(filterCoords(plane, lasPoints));
+                planes.put(key, plane);
         });
             var endTime = System.nanoTime();
             System.out.println("Planes: " + (endTime - startTime) / 1000000 + "s");
+            return planes;
     }
-    public void getAverageErrors(ArrayList<MyPoint> lasPoints){
-        System.out.println("Beginning average errors");
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-        List<Future<Void>> futures = new ArrayList<>();
-//        this.planes.forEach((key, value) -> {
-//                Callable<Void> task = () -> {
-//                    filterCoords(key, value, lasPoints);
-//                    return null;
-//            };
-//            futures.add(executor.submit(task));
-//        });
-//        for (Future<Void> future : futures) {
-//            try {
-//                future.get();
-//
-//            } catch (InterruptedException | ExecutionException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        executor.shutdown();
-        this.planes.forEach((key, plane) -> filterCoords(key, plane, lasPoints));
+
+    private RealMatrix getPlaneCoefficients(double[] xArray, double[] yArray, double[] zArray){
+        double[] onesRow = new double[xArray.length];
+        Arrays.fill(onesRow, 1.0);
+        RealMatrix A = MatrixUtils.createRealMatrix(new double[][]{
+                onesRow,
+                xArray,
+                yArray
+        }).transpose();
+        RealMatrix AT = A.transpose();
+        RealMatrix B = MatrixUtils.createColumnRealMatrix(zArray);
+        RealMatrix ATA = AT.multiply(A);
+        RealMatrix ATAInv = new LUDecomposition(ATA).getSolver().getInverse();
+        return ATAInv.multiply(AT).multiply(B);
     }
-    private void filterCoords(String key, Plane plane, ArrayList<MyPoint> lasPoints){
+    private double filterCoords(Plane plane, ArrayList<MyPoint> lasPoints){
         BoundingBox planeBbox = plane.getPlaneBbox();
         double a = plane.getaCoefficient();
         double b = plane.getbCoefficient();
@@ -85,12 +62,7 @@ public class PlanesHandler {
                 }
             }
         }
-        OptionalDouble average = distances.stream().mapToDouble(Double::doubleValue).average();
-        double error = average.isPresent() ? average.getAsDouble() : 0.0;
-        this.errors.put(key, error);
+        return distances.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
     }
 
-    public ConcurrentHashMap<String, Double> getErrors() {
-        return errors;
-    }
 }
