@@ -1,7 +1,11 @@
 import com.github.mreutegg.laszip4j.LASReader;
+import javafx.application.Application;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 
@@ -9,21 +13,15 @@ public class Main {
 
     public static void main(String[] args) {
         float startTime = System.nanoTime();
-        File lasFile = new File("C:\\Users\\filo1\\Desktop\\stare\\pr\\las\\78776_1433575_M-34-47-D-c-1-3-3-1.laz");
-        File gmlDirectory = new File("C:\\Users\\filo1\\Desktop\\stare\\pr\\gmls\\Modele_3D");
+        File lasFile = new File("stare\\pr\\las\\78776_1433575_M-34-47-D-c-1-3-3-1.laz");
+        File gmlDirectory = new File("stare\\pr\\gmls\\Modele_3D");
 
-        LASReader lasReader = new LASReader(lasFile);
-        LasPointsHandler lasPointsHandler = new LasPointsHandler();
-        lasPointsHandler.readLasPoints(lasReader);
-        ArrayList<MyPoint> lasPoints = lasPointsHandler.getLasPoints();
-        BoundingBox globalBbox = lasPointsHandler.getGlobalBbox();
-        RoofPointsHolder roofPointsHolder = new RoofPointsHolder();
-        roofPointsHolder.generateRoofPointsFromDirectory(gmlDirectory, globalBbox);
-        PlanesHandler planesHandler = new PlanesHandler();
-        planesHandler.generatePlanes(roofPointsHolder.getRoofPointsMap(), lasPoints);
+        DataProcessor dataProcessor = new DataProcessor(lasFile, gmlDirectory);
+        dataProcessor.process();
+
         float endTime = System.nanoTime();
         double elapsedTime = (endTime - startTime) * 1e-9;
-        System.out.println("Execution time: " + elapsedTime + " seconds");
+        System.out.println("Total execution time: " + elapsedTime + " seconds");
     }
 }
 

@@ -6,24 +6,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class RoofPointsHolder {
+public class RoofPointsHandler {
 
-    private HashMap<String, ArrayList<MyPoint>> roofPointsMap;
-
-    public RoofPointsHolder() {
-        roofPointsMap = new HashMap<>();
-    }
-
-    public void generateRoofPointsFromDirectory(File directory, BoundingBox globalBbox) {
+    public HashMap<String, ArrayList<MyPoint>> generateRoofPointsFromDirectory(File directory, BoundingBox globalBbox) {
+        var start = System.nanoTime();
         System.out.println("Extracting Lod2 Points...");
-
+        HashMap<String, ArrayList<MyPoint>>roofPointsMap = new HashMap<>();
         ArrayList<File> filesFittingGlobalBbox = getLOD2FilesFittingTheGlobalBbox(directory, globalBbox);
-        System.out.println(filesFittingGlobalBbox.size() + " files fitting global bbox");
-
         for (File file : filesFittingGlobalBbox) {
-            System.out.println(file.getAbsolutePath());
-            RoofParser.loadRoofPointsFromFileIntoMap(file, this.roofPointsMap, globalBbox);
+            RoofParser.loadRoofPointsFromFileIntoMap(file, roofPointsMap, globalBbox);
         }
+        var end = System.nanoTime();
+        System.out.println("Generating roofPoints took: " + (end - start) * 1e-9 + " s");
+        return roofPointsMap;
     }
 
 
@@ -74,9 +69,5 @@ public class RoofPointsHolder {
             }
         }
         return filesFittingGlobalBbox;
-    }
-
-    public HashMap<String, ArrayList<MyPoint>> getRoofPointsMap() {
-        return roofPointsMap;
     }
 }

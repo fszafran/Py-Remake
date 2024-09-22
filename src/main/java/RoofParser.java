@@ -25,7 +25,7 @@ public class RoofParser {
                                         String id = surface.getAttributes().getFirst().getValue();
                                         ArrayList<MyPoint> pointsArray = extractRoofPointsFromPos(surface, globalBbox);
                                         if(pointsArray.isEmpty()){
-                                            continue; // roof has points outside globalBbox, is skipped
+                                            continue; // roof is skipped if it has points outside globalBbox
                                         }
                                         pointsMap.put(id, pointsArray);
                                         roofCount++;
@@ -37,7 +37,7 @@ public class RoofParser {
                 }
             }
         }
-        System.out.println("RoofCount: " + roofCount);
+        System.out.println("Loaded: " + roofCount + " roofs from: " + file.getAbsolutePath());
     }
 
     public static Document parse(File file) {

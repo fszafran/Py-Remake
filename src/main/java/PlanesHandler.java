@@ -29,7 +29,7 @@ public class PlanesHandler {
                 planes.put(key, plane);
         });
             var endTime = System.nanoTime();
-            System.out.println("Planes: " + (endTime - startTime) / 1000000 + "s");
+            System.out.println("Constructing planes took: " + (endTime - startTime) * 1e-9 + "s");
             return planes;
     }
 

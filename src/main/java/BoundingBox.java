@@ -33,6 +33,12 @@ public class BoundingBox {
         return !(this.maxX < x) && !(this.minX > x) && !(this.maxY < y) && !(this.minY > y);
     }
 
+    public MyPoint getCenter(){
+        double xCenter = maxX - minX;
+        double yCenter = maxY - minY;
+        return new MyPoint(xCenter, yCenter);
+    }
+
     public double getMinX() {
         return this.minX;
     }

@@ -8,6 +8,7 @@ public class LasPointsHandler {
 
     private BoundingBox globalBbox;
     private ArrayList<MyPoint> lasPoints;
+
     public LasPointsHandler() {
         this.globalBbox = new BoundingBox();
         this.lasPoints = new ArrayList<>();
@@ -32,7 +33,7 @@ public class LasPointsHandler {
         }
 
         var stop = System.nanoTime();
-        System.out.println("Extracted: " + counter + " Points in: "+ (stop-start) * 1e-9 + " seconds");
+        System.out.println("Extracted: " + counter + " Las points in: "+ (stop-start) * 1e-9 + " seconds");
 
         System.out.println("minX: "+ globalBbox.getMinX() + " maxX: " + globalBbox.getMaxX() + " minY: "
                 + globalBbox.getMinY() + " maxY: " + globalBbox.getMaxY());

@@ -5,7 +5,7 @@ public class Plane {
     //plane equation = ax + by + cz + d = 0
     private double aCoefficient;
     private double bCoefficient;
-    private final double  cCoefficient = -1.0;
+    private double  cCoefficient = -1.0;
     private double dCoefficient;
     private double error;
 
@@ -50,6 +50,7 @@ public class Plane {
     public void setError(double error) {
         this.error = error;
     }
+
     public double getError() {
         return error;
     }
